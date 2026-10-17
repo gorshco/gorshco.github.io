@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QQQUSDT & SPYUSDT — Live Prices</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#131b2e;--line:#26324a;--muted:#94a3b8;--text:#edf2ff;--green:#39d98a;--red:#ff6b7a;--blue:#80aaff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#182544 0%,var(--bg) 55%);font:16px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);padding:36px 18px}
+main{max-width:980px;margin:auto}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:28px}.eyebrow{color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}h1{font-size:clamp(28px,4vw,42px);line-height:1.1;margin:8px 0}.sub{color:var(--muted);margin:8px 0 0}.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;background:#10182a;border:1px solid var(--line);padding:9px 12px;border-radius:999px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px #39d98a80}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.card{background:linear-gradient(145deg,#18233a,#11192a);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 18px 50px #0002}.asset{display:flex;align-items:center;gap:12px}.symbol{width:44px;height:44px;border-radius:14px;background:#25385b;display:grid;place-items:center;font-weight:850;color:#dce7ff}.name{font-weight:750;font-size:18px}.desc{font-size:12px;color:var(--muted)}.price{font-size:clamp(32px,5vw,46px);font-weight:800;letter-spacing:-.04em;margin:24px 0 4px;font-variant-numeric:tabular-nums}.change{font-weight:700;font-size:14px}.positive{color:var(--green)}.negative{color:var(--red)}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}.metric-label{font-size:12px;color:var(--muted);margin-bottom:4px}.metric-value{font-weight:650;font-variant-numeric:tabular-nums}.foot{color:var(--muted);font-size:12px;margin-top:24px}.foot a{color:var(--blue)}.error{color:#ffb7bf;font-size:13px;margin-top:12px;min-height:20px}.refresh{background:#23365a;color:var(--text);border:1px solid #3b527a;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}.refresh:hover{background:#2b426c}.updated{font-variant-numeric:tabular-nums}
+</style></head>
+<body><main>
+<header class="top"><div><div class="eyebrow">Market monitor · USDT perpetuals</div><h1>QQQUSDT &amp; SPYUSDT</h1><p class="sub">Latest traded price from Binance Futures, plus 24-hour change and trading range.</p></div><div><div class="status"><span class="dot" id="dot"></span><span id="status">Connecting to Binance Futures…</span></div><div style="text-align:right;margin-top:12px"><button class="refresh" id="refresh">Refresh now ↻</button></div></div></header>
+<section class="cards">
+<article class="card" id="card-QQQUSDT"><div class="asset"><div class="symbol">QQQ</div><div><div class="name">QQQUSDT</div><div class="desc">Invesco Nasdaq-100 ETF · Perpetual</div></div></div><div class="price" id="price-QQQUSDT">—</div><div class="change" id="change-QQQUSDT">Waiting for market data…</div><div class="metrics"><div><div class="metric-label">24h high</div><div class="metric-value" id="high-QQQUSDT">—</div></div><div><div class="metric-label">24h low</div><div class="metric-value" id="low-QQQUSDT">—</div></div><div><div class="metric-label">24h volume</div><div class="metric-value" id="volume-QQQUSDT">—</div></div><div><div class="metric-label">Quote volume</div><div class="metric-value" id="quote-QQQUSDT">—</div></div></div><div class="error" id="error-QQQUSDT"></div></article>
+<article class="card" id="card-SPYUSDT"><div class="asset"><div class="symbol">SPY</div><div><div class="name">SPYUSDT</div><div class="desc">SPDR S&amp;P 500 ETF · Perpetual</div></div></div><div class="price" id="price-SPYUSDT">—</div><div class="change" id="change-SPYUSDT">Waiting for market data…</div><div class="metrics"><div><div class="metric-label">24h high</div><div class="metric-value" id="high-SPYUSDT">—</div></div><div><div class="metric-label">24h low</div><div class="metric-value" id="low-SPYUSDT">—</div></div><div><div class="metric-label">24h volume</div><div class="metric-value" id="volume-SPYUSDT">—</div></div><div><div class="metric-label">Quote volume</div><div class="metric-value" id="quote-SPYUSDT">—</div></div></div><div class="error" id="error-SPYUSDT"></div></article>
+</section>
+<p class="foot">Price and 24-hour statistics: Binance USDⓈ-M Futures public market-data API. Prices are for perpetual futures contracts, not the ETFs’ regular exchange quotes. Contracts trade 24/7 and can diverge from the underlying ETFs, especially outside US market hours. Data availability depends on your network and the exchange API. <span class="updated" id="updated">Last update: —</span></p>
+</main>
+<script>
+const symbols=['QQQUSDT','SPYUSDT'];
+const fmt=(v,d=2)=>Number(v).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const compact=v=>Number(v).toLocaleString('en-US',{notation:'compact',maximumFractionDigits:2});
+async function loadSymbol(symbol){
+ const err=document.getElementById('error-'+symbol);err.textContent='';
+ try{
+  const tickerRes=await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr?symbol='+symbol,{cache:'no-store'});
+  if(!tickerRes.ok) throw new Error('Ticker API returned HTTP '+tickerRes.status);
+  const d=await tickerRes.json();
+  if(!d.lastPrice) throw new Error('No ticker data returned');
+  document.getElementById('price-'+symbol).textContent=fmt(d.lastPrice);
+  const pct=Number(d.priceChangePercent), change=Number(d.priceChange);
+  const el=document.getElementById('change-'+symbol);el.className='change '+(pct>=0?'positive':'negative');el.textContent=(pct>=0?'+':'')+fmt(change)+' USDT  ('+(pct>=0?'+':'')+fmt(pct,2)+'% in 24h)';
+  document.getElementById('high-'+symbol).textContent=fmt(d.highPrice);
+  document.getElementById('low-'+symbol).textContent=fmt(d.lowPrice);
+  document.getElementById('volume-'+symbol).textContent=compact(d.volume)+' contracts';
+  document.getElementById('quote-'+symbol).textContent=compact(d.quoteVolume)+' USDT';
+  return true;
+ }catch(e){err.textContent='Could not load price: '+e.message+'. Check connection or open this page in a browser with API access.';return false;}
+}
+async function refresh(){document.getElementById('status').textContent='Updating…';const results=await Promise.all(symbols.map(loadSymbol));const ok=results.every(Boolean);document.getElementById('status').textContent=ok?'Live Binance Futures data connected':'Some data unavailable';document.getElementById('dot').style.background=ok?'var(--green)':'var(--red)';document.getElementById('updated').textContent='Last update: '+new Date().toLocaleTimeString();}
+document.getElementById('refresh').addEventListener('click',refresh);refresh();setInterval(refresh,5000);
+</script></body></html>
